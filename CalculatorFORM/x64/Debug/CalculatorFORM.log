@@ -1,12 +1,14 @@
 ﻿  Calculator.cpp
 C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.h(14,50): warning C4290: спецификация исключений C++ игнорируется, кроме случая, когда указывается, что функция не является __declspec(nothrow)
 C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(18,61): warning C4290: спецификация исключений C++ игнорируется, кроме случая, когда указывается, что функция не является __declspec(nothrow)
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(294,44): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(313,42): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(329,41): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(429,30): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(433,30): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(437,30): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(452,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(459,31): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(312,45): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(325,44): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(344,42): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(360,41): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(460,30): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(464,30): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(468,30): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(483,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(490,31): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\user\source\repos\CalculatorFORM\CalculatorFORM\Calculator.cpp(496,31): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
   CalculatorFORM.vcxproj -> C:\Users\user\source\repos\CalculatorFORM\x64\Debug\CalculatorFORM.exe

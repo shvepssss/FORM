@@ -40,9 +40,11 @@ double Calculator::calc(const char* str) throw(runtime_error)
 	size_t size_digits = read_digits(str_ws);
 	// считываем знаки действий
 	size_t size_operators = read_operators(str_ws);
+	// количество знаков отрицани€ числа
+	size_t count_negative = get_negative(size_operators);
 
-	// проверка, что операторов действий меньше на 1, чем цифр, иначе в записи выражени€ ошибка
-	if (size_operators != size_digits - 1)
+	// проверка, что операторов действий (кроме отрицани€ числа) меньше на 1, чем цифр, иначе в записи выражени€ ошибка
+	if ((size_operators- count_negative) != size_digits - 1)
 	{
 		throw runtime_error(error_content);
 	}
@@ -188,6 +190,20 @@ bool Calculator::has_errors(const char* str)
 	return answer;
 }
 
+/* ѕодсчЄт ! */
+size_t Calculator::get_negative(size_t size)
+{
+	size_t count = 0;
+	for (size_t i = 0; i < size; ++i)
+	{
+		if (operators[i] == '!')
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
 /* ѕроверка наличи€ . в числе */
 int Calculator::check_point(const char* str, int size)
 {
@@ -285,11 +301,26 @@ size_t Calculator::read_digits(const char* str)
 			else if(*str == '-')
 			{
 				// если слева пусто, или не цифра(и не точка!) - то это отрицательное число
-				if (*(str - 1) == NULL || (!((int)*(str - 1) >= 48 && (int)*(str - 1) <= 57) && *(str - 1)!='.' && *(str - 1) != ')'))
+				if (*(str + 1) != '(')// не отрицание
 				{
-					digit_str[j++] = *str;
+					if (*(str - 1) == NULL || (!((int)*(str - 1) >= 48 && (int)*(str - 1) <= 57) && *(str - 1) != '.' && *(str - 1) != ')'))
+					{
+						digit_str[j++] = *str;
+					}
+					else
+					{
+						digits[i] = str_to_double(digit_str, j);
+						i++;
+						free(digit_str);
+						j = 0;
+						digit_str = (char*)malloc(len);
+						if (digit_str == NULL)
+						{
+							throw runtime_error(error_memory);
+						}
+					}
 				}
-				else
+				else if (j!=0)
 				{
 					digits[i] = str_to_double(digit_str, j);
 					i++;
@@ -339,7 +370,7 @@ size_t Calculator::read_digits(const char* str)
 /* ѕолучаем максимальный приоритет действий */
 size_t Calculator::get_max_priority(size_t size)
 {
-	size_t max_priority = 3; // наивысший приоритет ^
+	size_t max_priority = 4; // наивысший приоритет отрицание числа
 
 	for (size_t i = 0; i < size; i++)
 	{
@@ -458,6 +489,12 @@ size_t Calculator::read_operators(const char* str)
 				operators[i] = *str;
 				priorities[i++] = 1 + coef;
 			}
+			else if(!((int)*(str + 1) >= 48 && (int)*(str + 1) <= 57) && *(str + 1) != '.')
+			{
+				
+				operators[i] = '!';
+				priorities[i++] = 4 + coef;
+			}
 			break;
 		case '(':
 			// рассчитываем коэффициент через процедуру только 1 раз
@@ -493,15 +530,34 @@ size_t Calculator::get_index_max_priority(size_t size_priorities)
 	return index;
 }
 
+/*  ол-во отрицательных чисел до знака отрицани€ */
+size_t Calculator::how_much_negative_before(size_t index)
+{
+	size_t count = 0;
+
+	for (size_t i = 0; i < index; i++)
+	{
+		if (operators[i] == '!')
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
 /* ѕроизводим рассчЄт */
 double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
 {
 	// индекс выбранного оператора
 	size_t oper;
 	double new_val = digits[0];
+	// отрицательное число
+	bool negative = false; 
+
 	// пока у нас не останетс€ одно число
-	while (size_digits > 1)
+	while (size_digits > 1 || get_negative(size_operators)>0)
 	{
+		negative = false;
 		// получаем индекс оператора наивысшего приоритета
 		oper = get_index_max_priority(size_operators);
 
@@ -509,103 +565,183 @@ double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
 		switch (operators[oper])
 		{
 		case '+':
-			new_val = digits[oper] + digits[oper + 1];
+			if (operators[oper - 1] != '!')
+			{
+				new_val = digits[oper] + digits[oper + 1];
+			}
+			else
+			{
+				new_val = digits[oper-1] + digits[oper];
+			}
 			break;
 		case '-':
-			new_val = digits[oper] - digits[oper + 1];
+			if (operators[oper - 1] != '!')
+			{
+				new_val = digits[oper] - digits[oper + 1];
+			}
+			else
+			{
+				new_val = digits[oper - 1] - digits[oper];
+			}
 			break;
 		case '*':
-			new_val = digits[oper] * digits[oper + 1];
+			if (operators[oper - 1] != '!')
+			{
+				new_val = digits[oper] * digits[oper + 1];
+			}
+			else
+			{
+				new_val = digits[oper - 1] * digits[oper];
+			}
 			break;
 		case '/':
 			// проверка ошибки делени€ на 0
-			if (digits[oper + 1] == 0)
+			if ((digits[oper + 1] == 0 && operators[oper - 1] != '!') || (digits[oper] == 0 && operators[oper - 1] == '!'))
 			{
 				throw runtime_error(error_div_zero);
 			}
 
-			new_val = digits[oper] / digits[oper + 1];
+			if (operators[oper - 1] != '!')
+			{
+				new_val = digits[oper] / digits[oper + 1];
+			}
+			else
+			{
+				new_val = digits[oper - 1] / digits[oper];
+			}
 			break;
 		case '^':
-			new_val = pow(digits[oper], digits[oper + 1]);
+			if (operators[oper - 1] != '!')
+			{
+				new_val = pow(digits[oper], digits[oper + 1]);
+			}
+			else
+			{
+				new_val = pow(digits[oper-1], digits[oper]);
+			}
+			
+			break;
+		case '!':
+			negative = true;
+			new_val = -digits[oper-how_much_negative_before(oper)];
 			break;
 		}
-		//cout << digits[oper] << operators[oper] << digits[oper + 1] << "=" << new_val << " приоритет " << priorities[oper] << endl;
-
+		
 		// убираем рассчитанные значени€ из массивов и размеров массивов 
-		memory_reallocation(size_operators, oper, new_val);
-		size_digits--;
+		memory_reallocation(size_digits, size_operators, oper, new_val);
+
+		// если не знак отрицани€
+		if (!negative)
+		{
+			size_digits--;
+		}
+		
 		size_operators--;
 	}
 	return new_val;
 }
 
 /* »змен€ем массивы приоритетов, операторов и чисел */
-void Calculator::memory_reallocation(size_t size, size_t index, double new_val)
+void Calculator::memory_reallocation(size_t size_digits, size_t size_operators, size_t index, double new_val)
 {
-	char *temp_operators = (char*)malloc(size-1);
-	int  *temp_priorities = (int*)malloc((size-1) * sizeof(int));
-	double *temp_digits = (double*)malloc((size) * sizeof(double));
+	char *temp_operators = (char*)malloc(size_operators -1);
+	int  *temp_priorities = (int*)malloc((size_operators -1) * sizeof(int));
+	double *temp_digits = (double*)malloc((size_digits) * sizeof(double));
 
 	if (temp_operators == NULL || temp_priorities == NULL || temp_digits == NULL)
 	{
 		throw runtime_error(error_memory);
 	}
 
-	for (size_t i = 0; i < size+1; i++)
+	// действи€
+	for (size_t i = 0; i < size_operators; i++)
 	{
 		if (i < index)
 		{
 			temp_operators[i] = operators[i];
 			temp_priorities[i] = priorities[i];
+		}
+		else if (i > index)
+		{
+			temp_operators[i - 1] = operators[i];
+			temp_priorities[i - 1] = priorities[i];
+		}
+	}
+	// числа
+	/*for (size_t i = 0; i < size_digits; i++)
+	{
+		if (i == index)
+		{
+			temp_digits[i] = new_val;
+		}
+		else if (i < index)
+		{
 			temp_digits[i] = digits[i];
+		}
+		else if (i >= index+2)
+		{
+			temp_digits[i-1] = digits[i];
+		}
+	}*/
+
+	for (size_t i = 0; i < size_operators+1; i++)
+	{
+		if (i < index)
+		{
+			if (i < size_digits && operators[i] != '!')
+			{
+				temp_digits[i] = digits[i];
+			}
 		}
 		else if(i > index)
 		{
-			if (i < size)
+			if (i  >= index + 2 && operators[i]!= '!' && (i < size_digits) )
 			{
-				temp_operators[i - 1] = operators[i];
-				temp_priorities[i - 1] = priorities[i];
+				temp_digits[i - 1] = digits[i];
 			}
 
-			if (i >= index + 2)
+			if (operators[i] == '!')
 			{
-				temp_digits[i-1] = digits[i];
+				temp_digits[i- how_much_negative_before(i)] = digits[i- how_much_negative_before(i)];
 			}
 		}
-		else if (i == index)
+		else if (i == index && operators[index-1]!= '!')
 		{
 			temp_digits[i] = new_val;
+		}
+		else if (i == index && operators[index - 1] == '!')
+		{
+			temp_digits[i - how_much_negative_before(i)] = new_val;
 		}
 	}
 
 	// в этом случае пусть освобождает деструктор дл€ массивов операторов и приоритетов
-	if (size != 1) 
+	if (size_operators != 1) 
 	{
 		free(operators);
 		free(priorities);
 
-		operators = (char*)malloc((size - 1));
-		priorities = (int*)malloc((size - 1) * sizeof(int));
+		operators = (char*)malloc((size_operators - 1));
+		priorities = (int*)malloc((size_operators - 1) * sizeof(int));
 
 		if (operators == NULL || priorities == NULL)
 		{
 			throw runtime_error(error_memory);
 		}
 
-		memcpy(operators, temp_operators, (size-1));
-		memcpy(priorities, temp_priorities, ((size-1) * sizeof(int)));
+		memcpy(operators, temp_operators, (size_operators -1));
+		memcpy(priorities, temp_priorities, ((size_operators -1) * sizeof(int)));
 	}
 
 	free(digits);
-	digits = (double*)malloc(size * sizeof(double));
+	digits = (double*)malloc(size_digits * sizeof(double));
 
 	if (digits == NULL )
 	{
 		throw runtime_error(error_memory);
 	}
 
-	memcpy(digits, temp_digits,(size * sizeof(double)));
+	memcpy(digits, temp_digits,(size_digits * sizeof(double)));
 
 	free(temp_digits);
 	free(temp_operators);

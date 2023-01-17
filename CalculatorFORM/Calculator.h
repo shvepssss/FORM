@@ -18,6 +18,8 @@ private:
 	void get_str_ws(const char* str, char* str_ws);
 	// проверка ошибок в выражении
 	bool has_errors(const char* str);
+	// подсчёт !
+	size_t get_negative(size_t size);
 	// проверка наличия . в числе
 	int check_point(const char* str, int size);
 	// преобразование массива символов в число
@@ -32,10 +34,12 @@ private:
 	size_t read_operators(const char* str);
 	// ищем индекс максимального приоритета действия
 	size_t get_index_max_priority(size_t size);
+	// кол-во отрицательных чисел до знака отрицания
+	size_t how_much_negative_before(size_t index);
 	// производим рассчёт
 	double get_answer(size_t &size_digits, size_t &size_operators);
 	// изменяем массивы приоритетов, операторов и чисел
-	void memory_reallocation(size_t size, size_t index, double new_val);
+	void memory_reallocation(size_t size_digits, size_t size_operators, size_t index, double new_val);
 	// очищаем массивы
 	void clear_data();
 
