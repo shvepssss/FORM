@@ -28,7 +28,7 @@ double Calculator::calc(const char* str) throw(runtime_error)
 	}
 
 	// записываем строку без пробелов
-    get_str_ws(str, str_ws);
+	get_str_ws(str, str_ws);
 
 	// проверяем выражение на ошибки
 	if (has_errors(str_ws))
@@ -44,7 +44,7 @@ double Calculator::calc(const char* str) throw(runtime_error)
 	size_t count_negative = get_negative(size_operators);
 
 	// проверка, что операторов действий (кроме отрицания числа) меньше на 1, чем цифр, иначе в записи выражения ошибка
-	if ((size_operators- count_negative) != size_digits - 1)
+	if ((size_operators - count_negative) != size_digits - 1)
 	{
 		throw runtime_error(error_content);
 	}
@@ -61,7 +61,7 @@ void Calculator::get_str_ws(const char* str, char* str_ws)
 {
 	size_t i = 0;
 	// последний символ -не пробел
-	char last_val=' ';
+	char last_val = ' ';
 	bool space = false;
 
 	while (*str)
@@ -100,10 +100,10 @@ void Calculator::get_str_ws(const char* str, char* str_ws)
 bool Calculator::has_errors(const char* str)
 {
 	bool answer = false;
-	size_t i=0, count_lbrackets = 0, count_rbrackets = 0, count_points = 0;
+	size_t i = 0, count_lbrackets = 0, count_rbrackets = 0, count_points = 0;
 
 	// --5
-	if (str[0] == '-' && str[1] == '-') 
+	if (str[0] == '-' && str[1] == '-')
 		answer = true;
 
 	while (*str)
@@ -138,10 +138,10 @@ bool Calculator::has_errors(const char* str)
 			answer = true;
 			break;
 		}
-		
+
 		// символы, кроме цифр и знаков
 		if (!(((int)*str >= 48 && (int)*str <= 57) || *str == '.' || *str == '-'
-			|| *str == '+' || *str == '*' || *str == '/' || *str == '^' 
+			|| *str == '+' || *str == '*' || *str == '/' || *str == '^'
 			|| *str == '(' || *str == ')'))
 		{
 			answer = true;
@@ -151,8 +151,8 @@ bool Calculator::has_errors(const char* str)
 		// знаки действий подряд кроме *какой-то знак*-
 		if (i > 0)
 		{
-			if (( *str == '+' || *str == '*' || *str == '/' || *str == '^')
-				&& (*(str-1) == '-' || *(str - 1) == '+' || *(str - 1) == '*' || *(str - 1) == '/' || *(str - 1) == '^'))
+			if ((*str == '+' || *str == '*' || *str == '/' || *str == '^')
+				&& (*(str - 1) == '-' || *(str - 1) == '+' || *(str - 1) == '*' || *(str - 1) == '/' || *(str - 1) == '^'))
 			{
 				answer = true;
 				break;
@@ -164,12 +164,12 @@ bool Calculator::has_errors(const char* str)
 		{
 			count_points++;
 		}
-		if (( * str == '-' || *str == '+' || *str == '*' || *str == '/' || *str == '^' || *str == ')') && count_points>0)
+		if ((*str == '-' || *str == '+' || *str == '*' || *str == '/' || *str == '^' || *str == ')') && count_points > 0)
 		{
 			count_points--;
 		}
 		// если кол-во подряд идущих точек между цифрами больше одной
-		if (count_points>1)
+		if (count_points > 1)
 		{
 			answer = true;
 			break;
@@ -179,14 +179,14 @@ bool Calculator::has_errors(const char* str)
 		++str;
 	}
 
-	if(count_rbrackets != count_lbrackets)
+	if (count_rbrackets != count_lbrackets)
 		answer = true;
 
 	// 5--
-	if (*(str-1) == '-' && *(str - 2) == '-')
+	if (*(str - 1) == '-' && *(str - 2) == '-')
 		answer = true;
-	
-	
+
+
 	return answer;
 }
 
@@ -214,7 +214,7 @@ int Calculator::check_point(const char* str, int size)
 			return i;
 		}
 	}
-	
+
 	return -1;
 }
 
@@ -223,27 +223,27 @@ double Calculator::str_to_double(const char* str, int size)
 {
 	// определяем, есть ли точка в записи числа
 	int pozition_point = check_point(str, size);
-	double digit= 0; // получаемое число
+	double digit = 0; // получаемое число
 	double coef = 1; // коэффициент для расчета 
 
 	// высчитываем коеффициент для корректного расчета части числа справа от точки
 	if (pozition_point != -1)
 	{
-		for (size_t j = 0; j < size- pozition_point - 1; j++)
+		for (size_t j = 0; j < size - pozition_point - 1; j++)
 		{
 			coef *= 0.1;
 		}
 	}
 
 	// высчитываем число
-	for (int i = size-1; i>=0;i--)
+	for (int i = size - 1; i >= 0; i--)
 	{
 		if ((int)str[i] >= 48 && (int)str[i] <= 57) // если символ это число
 		{
-			digit += (str[i]-48) * coef;
+			digit += (str[i] - 48) * coef;
 			coef *= 10;
 		}
-		else if (str[i] == '-' && i==0) // если символ это знак отрицания
+		else if (str[i] == '-' && i == 0) // если символ это знак отрицания
 		{
 			digit *= -1;
 		}
@@ -266,7 +266,7 @@ size_t Calculator::read_digits(const char* str)
 	size_t i = 0; // счетчик для массива чисел
 	size_t j = 0; // счетчик для массива-будущего числа
 
-	while(*str)
+	while (*str)
 	{
 		// числа . -
 		if (((int)*str >= 48 && (int)*str <= 57) || *str == '.' || *str == '-')
@@ -275,7 +275,7 @@ size_t Calculator::read_digits(const char* str)
 			if (*str == '.')
 			{
 				// проверяем на недостаток цифр слева от .
-				if (*(str-1) == NULL)
+				if (*(str - 1) == NULL)
 				{
 					digit_str[j++] = '0';
 					digit_str[j++] = '.';
@@ -298,7 +298,7 @@ size_t Calculator::read_digits(const char* str)
 					digit_str[j++] = '0';
 				}
 			}
-			else if(*str == '-')
+			else if (*str == '-')
 			{
 				// если слева пусто, или не цифра(и не точка!) - то это отрицательное число
 				if (*(str + 1) != '(')// не отрицание
@@ -320,7 +320,7 @@ size_t Calculator::read_digits(const char* str)
 						}
 					}
 				}
-				else if (j!=0)
+				else if (j != 0)
 				{
 					digits[i] = str_to_double(digit_str, j);
 					i++;
@@ -339,7 +339,7 @@ size_t Calculator::read_digits(const char* str)
 			}
 		}
 		// иначе это знак действия, если (j==0 && i==0 - и это знак, то это скорее всего знак в начале выражения, что является ошибкой
-		else if (*str != '(' && *str != ')' && !(j==0 && i==0))
+		else if (*str != '(' && *str != ')' && !(j == 0 && i == 0))
 		{
 			digits[i] = str_to_double(digit_str, j);
 			i++;
@@ -386,7 +386,7 @@ size_t Calculator::get_max_pow(const char* str, size_t shift)
 	size_t max_pow_left = 0; // кол-во степеней слева от позиции уже считанных знаков
 	size_t max_pow_right = 0; // кол-во степеней справа от позиции уже считанных знаков
 	// для рассчетов
-	size_t temp_pow_left = 0; 
+	size_t temp_pow_left = 0;
 	size_t temp_pow_right = 0;
 
 	char last_sign = NULL; // последний знак
@@ -398,16 +398,16 @@ size_t Calculator::get_max_pow(const char* str, size_t shift)
 			i++;
 			last_sign = *str;
 		}
-		else if (((int) * (str - 1) >= 48 && (int)*(str - 1) <= 57) && *str == '-')
+		else if (((int)*(str - 1) >= 48 && (int)*(str - 1) <= 57) && *str == '-')
 		{
 			i++;
 			last_sign = *str;
 		}
-		
+
 		if (*str == '^')
 		{
 			i++;
-			
+
 			// если прошлый знак не был возведением в степень
 			if (last_sign != '^')
 			{
@@ -437,7 +437,7 @@ size_t Calculator::get_max_pow(const char* str, size_t shift)
 
 	// если подряд идущий степеней в левой части от считанных знаков было больше,
 	// чем в правой, то нам это не важно и мы возвращаем 0. 
-	return (max_pow_left >= max_pow_right ? 0: max_pow_right);
+	return (max_pow_left >= max_pow_right ? 0 : max_pow_right);
 }
 
 /* Считаем действия из выражения */
@@ -469,7 +469,7 @@ size_t Calculator::read_operators(const char* str)
 			break;
 		case '^':
 			operators[i] = *str;
-			if (i > 0) 
+			if (i > 0)
 			{
 				if (operators[i - 1] == '^')
 				{
@@ -480,18 +480,18 @@ size_t Calculator::read_operators(const char* str)
 					coef_pow = 0;
 				}
 			}
-			priorities[i++] = 3 + coef+coef_pow;
+			priorities[i++] = 3 + coef + coef_pow;
 			break;
 		case '-':
 			// если до минуса есть число или ) -> это не знак отрицательного числа
-			if (((int)*(str - 1) >= 48 && (int)*(str - 1) <= 57)|| *(str - 1) == ')' || *(str - 1) == '.')
+			if (((int)*(str - 1) >= 48 && (int)*(str - 1) <= 57) || *(str - 1) == ')' || *(str - 1) == '.')
 			{
 				operators[i] = *str;
 				priorities[i++] = 1 + coef;
 			}
-			else if(!((int)*(str + 1) >= 48 && (int)*(str + 1) <= 57) && *(str + 1) != '.')
+			else if (!((int)*(str + 1) >= 48 && (int)*(str + 1) <= 57) && *(str + 1) != '.')
 			{
-				
+
 				operators[i] = '!';
 				priorities[i++] = 4 + coef;
 			}
@@ -501,7 +501,7 @@ size_t Calculator::read_operators(const char* str)
 			if (coef_shift == 0)
 			{
 				// максимальный имеющийся приоритет до первой скобки+максимальное кол-во подряд идущих степеней+1
-				coef_shift = get_max_priority(i)+ get_max_pow(str_temp, i-1)+1;
+				coef_shift = get_max_priority(i) + get_max_pow(str_temp, i - 1) + 1;
 			}
 			coef += coef_shift;
 			break;
@@ -546,16 +546,16 @@ size_t Calculator::how_much_negative_before(size_t index)
 }
 
 /* Производим рассчёт */
-double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
+double Calculator::get_answer(size_t& size_digits, size_t& size_operators)
 {
 	// индекс выбранного оператора
 	size_t oper;
 	double new_val = digits[0];
 	// отрицательное число
-	bool negative = false; 
+	bool negative = false;
 
 	// пока у нас не останется одно число
-	while (size_digits > 1 || get_negative(size_operators)>0)
+	while (size_digits > 1 || get_negative(size_operators) > 0)
 	{
 		negative = false;
 		// получаем индекс оператора наивысшего приоритета
@@ -571,7 +571,7 @@ double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
 			}
 			else
 			{
-				new_val = digits[oper-1] + digits[oper];
+				new_val = digits[oper - 1] + digits[oper];
 			}
 			break;
 		case '-':
@@ -617,13 +617,13 @@ double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
 			}
 			else
 			{
-				new_val = pow(digits[oper-1], digits[oper]);
+				new_val = pow(digits[oper - 1], digits[oper]);
 			}
-			
+
 			break;
 		case '!':
 			negative = true;
-			new_val = -digits[oper-how_much_negative_before(oper)];
+			new_val = -digits[oper - how_much_negative_before(oper)];
 			break;
 		}
 		
@@ -635,7 +635,7 @@ double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
 		{
 			size_digits--;
 		}
-		
+
 		size_operators--;
 	}
 	return new_val;
@@ -644,9 +644,9 @@ double Calculator::get_answer(size_t &size_digits, size_t &size_operators)
 /* Изменяем массивы приоритетов, операторов и чисел */
 void Calculator::memory_reallocation(size_t size_digits, size_t size_operators, size_t index, double new_val)
 {
-	char *temp_operators = (char*)malloc(size_operators -1);
-	int  *temp_priorities = (int*)malloc((size_operators -1) * sizeof(int));
-	double *temp_digits = (double*)malloc((size_digits) * sizeof(double));
+	char* temp_operators = (char*)malloc(size_operators - 1);
+	int* temp_priorities = (int*)malloc((size_operators - 1) * sizeof(int));
+	double* temp_digits = (double*)malloc((size_digits) * sizeof(double));
 
 	if (temp_operators == NULL || temp_priorities == NULL || temp_digits == NULL)
 	{
@@ -668,55 +668,44 @@ void Calculator::memory_reallocation(size_t size_digits, size_t size_operators, 
 		}
 	}
 	// числа
-	/*for (size_t i = 0; i < size_digits; i++)
-	{
-		if (i == index)
-		{
-			temp_digits[i] = new_val;
-		}
-		else if (i < index)
-		{
-			temp_digits[i] = digits[i];
-		}
-		else if (i >= index+2)
-		{
-			temp_digits[i-1] = digits[i];
-		}
-	}*/
-
-	for (size_t i = 0; i < size_operators+1; i++)
+	size_t i_digit = 0;
+	for (size_t i = 0; i < size_operators + 1; i++)
 	{
 		if (i < index)
 		{
 			if (i < size_digits && operators[i] != '!')
 			{
-				temp_digits[i] = digits[i];
+				temp_digits[i_digit++] = digits[i];
 			}
 		}
-		else if(i > index)
+		else if (i > index)
 		{
-			if (i  >= index + 2 && operators[i]!= '!' && (i < size_digits) )
+			if (i >= index + 2 && operators[i] != '!' && (i < size_digits))
 			{
-				temp_digits[i - 1] = digits[i];
+				temp_digits[i_digit++] = digits[i];
 			}
-
-			if (operators[i] == '!')
+			else if (operators[i - 1] == '!' && operators[i] != '!' && i == index + 1 && i < size_digits)
 			{
-				temp_digits[i- how_much_negative_before(i)] = digits[i- how_much_negative_before(i)];
+				temp_digits[i_digit++] = digits[i];
+			}
+			
+			if (operators[i] == '!' && i_digit+1< size_digits)
+			{
+				temp_digits[i_digit++] = digits[i - how_much_negative_before(i)];
 			}
 		}
-		else if (i == index && operators[index-1]!= '!')
+		else if (i == index && operators[index - 1] != '!')
 		{
-			temp_digits[i] = new_val;
+			temp_digits[i_digit++] = new_val;
 		}
 		else if (i == index && operators[index - 1] == '!')
 		{
-			temp_digits[i - how_much_negative_before(i)] = new_val;
+			temp_digits[i_digit++] = new_val;
 		}
 	}
 
 	// в этом случае пусть освобождает деструктор для массивов операторов и приоритетов
-	if (size_operators != 1) 
+	if (size_operators != 1)
 	{
 		free(operators);
 		free(priorities);
@@ -729,19 +718,19 @@ void Calculator::memory_reallocation(size_t size_digits, size_t size_operators, 
 			throw runtime_error(error_memory);
 		}
 
-		memcpy(operators, temp_operators, (size_operators -1));
-		memcpy(priorities, temp_priorities, ((size_operators -1) * sizeof(int)));
+		memcpy(operators, temp_operators, (size_operators - 1));
+		memcpy(priorities, temp_priorities, ((size_operators - 1) * sizeof(int)));
 	}
 
 	free(digits);
 	digits = (double*)malloc(size_digits * sizeof(double));
 
-	if (digits == NULL )
+	if (digits == NULL)
 	{
 		throw runtime_error(error_memory);
 	}
 
-	memcpy(digits, temp_digits,(size_digits * sizeof(double)));
+	memcpy(digits, temp_digits, (size_digits * sizeof(double)));
 
 	free(temp_digits);
 	free(temp_operators);
